@@ -92,20 +92,20 @@
             margin-bottom: 25px;
         }
 
-        .price-tag {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
-            border: 1px solid rgba(251, 191, 36, 0.3);
+        .free-tag {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(21, 128, 61, 0.2));
+            border: 1px solid rgba(34, 197, 94, 0.3);
             border-radius: 15px;
             padding: 15px 25px;
             margin: 30px 0;
             display: inline-block;
         }
 
-        .current-price {
+        .free-text {
             display: block;
             font-size: 1.8rem;
             font-weight: 700;
-            color: #fbbf24;
+            color: #22c55e;
         }
 
         .start-btn {
@@ -148,6 +148,10 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 30px;
+        }
+
+        .progress-container {
+            margin-bottom: 15px;
         }
 
         .progress-bar {
@@ -224,6 +228,30 @@
             border-color: #8b5cf6;
         }
 
+        /* 结果页样式 */
+        .result-content {
+            text-align: center;
+        }
+
+        .pain-point-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .pain-point-title {
+            color: #f0abfc;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .pain-point-desc {
+            color: #ddd6fe;
+            font-size: 0.95rem;
+        }
+
         /* 响应式设计 */
         @media (max-width: 480px) {
             .page {
@@ -259,8 +287,8 @@
                     <p class="description">帮你找到职场/关系/生活的"卡点"</p>
                 </div>
                 
-                <div class="price-tag">
-                    <span class="current-price">开始测试吧</span>
+                <div class="free-tag">
+                    <span class="free-text">完全免费测试</span>
                 </div>
                 
                 <button id="start-btn" class="start-btn">
@@ -289,70 +317,96 @@
                     <div class="progress-text">第 <span id="current-question">1</span>/30 题</div>
                 </div>
             </div>
-            // 完整的30道测试题
-const questions = [
-    {
-        id: 1,
-        category: "职场 · 权责模糊",
-        text: "当领导临时改需求，并暗示是你没理解清楚时，你更接近哪种反应？",
-        options: [
-            "A. 先自责，赶紧补救，事后越想越委屈",
-            "B. 当下没说什么，心里很不爽，之后开始摆烂",
-            "C. 想解释，但话说得很乱，越说越被动",
-            "D. 先确认事实和边界，再决定怎么回应"
+            
+            <div class="question-container">
+                <div class="category-tag" id="question-category">职场 · 权责模糊</div>
+                <h2 class="question-text" id="question-text"></h2>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
+
+        <!-- 结果页 -->
+        <div id="result-page" class="page">
+            <div class="cover-content">
+                <h1 class="main-title">测试完成！</h1>
+                <div class="description-box">
+                    <p class="highlight-text">🎉 恭喜完成测试</p>
+                    <p class="description">你已成功回答所有问题<br>正在生成你的个人报告...</p>
+                </div>
+                <div id="result-content"></div>
+                <button id="restart-btn" class="start-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <span>重新测试</span>
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 题目数据
+        const questions = [
+            {
+                id: 1,
+                category: "职场 · 权责模糊",
+                text: "当领导临时改需求，并暗示是你没理解清楚时，你更接近哪种反应？",
+                options: [
+                    "A. 先自责，赶紧补救，事后越想越委屈",
+                    "B. 当下没说什么，心里很不爽，之后开始摆烂",
+                    "C. 想解释，但话说得很乱，越说越被动",
+                    "D. 先确认事实和边界，再决定怎么回应"
+                ],
+                painPoint: "职场内耗"
+            },
+            {
+                id: 2,
+                category: "职场 · 功劳被抢",
+                text: "同事把你的功劳拿走时，你通常怎么做？",
+                options: [
+                    "A. 直接生气，心里委屈，但不说出口",
+                    "B. 抱怨给朋友听，但不当面沟通",
+                    "C. 反复琢磨原因，浪费脑力",
+                    "D. 理清事实，记录证据，之后再找机会说明"
+                ],
+                painPoint: "职场边界"
+            },
+            {
+                id: 3,
+                category: "关系 · 情绪消耗",
+                text: "朋友总把自己的问题丢给你处理，你怎么办？",
+                options: [
+                    "A. 答应，但心里越来越累",
+                    "B. 直接拒绝，怕伤感情",
+                    "C. 敷衍应付，心里不舒服",
+                    "D. 先分析优先级，挑能帮的做"
+                ],
+                painPoint: "人际边界"
+            },
+            {
+                id: 4,
+                category: "职场 · 长期吃亏",
+                text: "明明你干的活更多，但功劳被同事拿走，你通常反应是？",
+                options: [
+                    "A. 默默忍受",
+                    "B. 向上级抱怨，容易陷入争论",
+                    "C. 暗中计较，但不表达",
+                    "D. 记录事实，找合适时机说明"
+                ],
+                painPoint: "职场内耗"
+            },
+            {
+                id: 5,
+                category: "职场 · 边界不清",
+                text: "被塞进不属于你职责的杂活，你会？",
+                options: [
+                    "A. 无条件接受",
+                    "B. 敷衍应付",
+                    "C. 想拒绝但说不出口",
+                    "D. 确认边界，挑能承受的做"
+                ],
+                painPoint: "职场边界"
+            }
         ],
-        painPoint: "职场内耗"
-    },
-    {
-        id: 2,
-        category: "职场 · 功劳被抢",
-        text: "同事把你的功劳拿走时，你通常怎么办？",
-        options: [
-            "A. 直接生气，心里委屈，但说不出口",
-            "B. 抱怨给朋友听，但不当面沟通",
-            "C. 反复琢磨原因，浪费脑力",
-            "D. 理清事实，记录证据，之后再找机会说明"
-        ],
-        painPoint: "职场边界"
-    },
-    {
-        id: 3,
-        category: "关系 · 情绪消耗",
-        text: "朋友总把自己的问题丢给你处理，你怎么办？",
-        options: [
-            "A. 答应，但心里越来越累",
-            "B. 直接拒绝，怕伤感情",
-            "C. 敷衍应付，心里不舒服",
-            "D. 先分析优先级，挑能帮的做"
-        ],
-        painPoint: "人际边界"
-    },
-    {
-        id: 4,
-        category: "职场 · 长期吃亏",
-        text: "明明你干的活更多，但功劳被同事拿走，你通常反应是？",
-        options: [
-            "A. 默默忍受",
-            "B. 向上级抱怨，容易陷入争论",
-            "C. 暗中计较，但不表达",
-            "D. 记录事实，找合适时机说明"
-        ],
-        painPoint: "职场内耗"
-    },
-    {
-        id: 5,
-        category: "职场 · 边界不清",
-        text: "被塞进不属于你职责的杂活，你会？",
-        options: [
-            "A. 无条件接受",
-            "B. 敷衍应付",
-            "C. 想拒绝但说不出口",
-            "D. 确认边界，挑能承受的做"
-        ],
-        painPoint: "职场边界"
-    },
-    {
-        id: 6,
+         id: 6,
         category: "职场 · 当众否定",
         text: "汇报时被当场打断或否定，你怎么办？",
         options: [
@@ -653,162 +707,6 @@ const questions = [
     }
 ];
 
-// 卡点类别定义
-const painPointCategories = {
-    "职场内耗": {
-        icon: "fas fa-briefcase",
-        description: "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗"
-    },
-    "职场边界": {
-        icon: "fas fa-user-tie",
-        description: "难以明确工作职责边界，容易被他人的需求和情绪过度卷入"
-    },
-    "人际边界": {
-        icon: "fas fa-users",
-        description: "在关系中习惯性让渡自己的需求，难以设立健康的界限"
-    },
-    "决策拖延": {
-        icon: "fas fa-clock",
-        description: "面对重要选择时过度犹豫，或因恐惧而推迟必要的决定"
-    },
-    "情绪内耗": {
-        icon: "fas fa-brain",
-        description: "在头脑中反复思考同一件事，难以停止的自我对话和担忧"
-    },
-    "情绪受控": {
-        icon: "fas fa-bolt",
-        description: "在情绪激动时做出非理性反应，事后常常感到后悔"
-    }
-};
-
-// 模型预览数据
-const modelPreviews = {
-    "职场内耗": {
-        name: "课题分离模型",
-        scenario: "当别人向你倾倒情绪垃圾或塞杂活时",
-        commonMistake: "习惯性接受，内心憋屈但说不出口",
-        correctThinking: "区分'谁的课题'：对方的需求是对方的课题，你的精力分配是你的课题",
-        hook: "完整版包含3种具体回应话术和5个保护注意力的行动步骤"
-    },
-    "职场边界": {
-        name: "事实-感受-需求模型",
-        scenario: "当领导或同事的反馈让你感到委屈或愤怒时",
-        commonMistake: "陷入'对错'争论，或默默忍受但内心积怨",
-        correctThinking: "分离事实、你的感受、和你的核心需求。先回应需求，再处理情绪",
-        hook: "完整版包含如何向上、向下、平级沟通的完整表达脚本"
-    },
-    "人际边界": {
-        name: "需求优先级模型",
-        scenario: "当朋友/家人不断占用你的时间和精力时",
-        commonMistake: "要么全盘接受（然后抱怨），要么生硬拒绝（然后愧疚）",
-        correctThinking: "建立'需求筛选矩阵'：先满足自己的核心需求，再衡量可提供的支持",
-        hook: "完整版教你在不同关系中使用'温柔而坚定'的表达框架"
-    },
-    "情绪内耗": {
-        name: "情绪刹车模型",
-        scenario: "当一件事在脑中反复盘旋，停不下来时",
-        commonMistake: "试图控制想法，结果越控制想得越多",
-        correctThinking: "承认情绪的存在，但不被它牵着走。用'观察-命名-行动'三步法",
-        hook: "完整版包含7个即时可用的大脑'刹车'技巧和长期练习方案"
-    },
-    "决策拖延": {
-        name: "最小可执行决策模型",
-        scenario: "面对复杂选择，迟迟无法决定时",
-        commonMistake: "等待'完美信息'或'最佳时机'，结果错失机会",
-        correctThinking: "找到可以立即行动的'最小下一步'，用行动获得反馈，而非用思考预测结果",
-        hook: "完整版有10个常见场景的决策框架和风险评估工具"
-    },
-    "情绪受控": {
-        name: "6秒钟反应空间模型",
-        scenario: "情绪激动，马上要说出或做出后悔的事时",
-        commonMistake: "被瞬间情绪控制，做出破坏性的反应",
-        correctThinking: "在情绪峰值和行动之间创造6秒钟的'反应空间'，让理性大脑重新上线",
-        hook: "完整版教你建立个人'情绪急救包'，包含物理、认知、行为三层干预"
-    }
-};
-
-        <!-- 结果页 -->
-        <div id="result-page" class="page">
-            <div class="cover-content">
-                <h1 class="main-title">测试完成！</h1>
-                <div class="description-box">
-                    <p class="highlight-text">🎉 恭喜完成测试</p>
-                    <p class="description">你已成功回答所有问题<br>正在生成你的个人报告...</p>
-                </div>
-                <div id="result-content"></div>
-                <button id="restart-btn" class="start-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
-                    <span>重新测试</span>
-                    <i class="fas fa-redo"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // 题目数据 - 直接写在HTML里，避免文件加载问题
-        const questions = [
-            {
-                id: 1,
-                category: "职场 · 权责模糊",
-                text: "当领导临时改需求，并暗示是你没理解清楚时，你更接近哪种反应？",
-                options: [
-                    "A. 先自责，赶紧补救，事后越想越委屈",
-                    "B. 当下没说什么，心里很不爽，之后开始摆烂",
-                    "C. 想解释，但话说得很乱，越说越被动",
-                    "D. 先确认事实和边界，再决定怎么回应"
-                ],
-                painPoint: "职场内耗"
-            },
-            {
-                id: 2,
-                category: "职场 · 功劳被抢",
-                text: "同事把你的功劳拿走时，你通常怎么做？",
-                options: [
-                    "A. 直接生气，心里委屈，但不说出口",
-                    "B. 抱怨给朋友听，但不当面沟通",
-                    "C. 反复琢磨原因，浪费脑力",
-                    "D. 理清事实，记录证据，之后再找机会说明"
-                ],
-                painPoint: "职场边界"
-            },
-            {
-                id: 3,
-                category: "关系 · 情绪消耗",
-                text: "朋友总把自己的问题丢给你处理，你怎么办？",
-                options: [
-                    "A. 答应，但心里越来越累",
-                    "B. 直接拒绝，怕伤感情",
-                    "C. 敷衍应付，心里不舒服",
-                    "D. 先分析优先级，挑能帮的做"
-                ],
-                painPoint: "人际边界"
-            },
-            {
-                id: 4,
-                category: "职场 · 长期吃亏",
-                text: "明明你干的活更多，但功劳被同事拿走，你通常反应是？",
-                options: [
-                    "A. 默默忍受",
-                    "B. 向上级抱怨，容易陷入争论",
-                    "C. 暗中计较，但不表达",
-                    "D. 记录事实，找合适时机说明"
-                ],
-                painPoint: "职场内耗"
-            },
-            {
-                id: 5,
-                category: "职场 · 边界不清",
-                text: "被塞进不属于你职责的杂活，你会？",
-                options: [
-                    "A. 无条件接受",
-                    "B. 敷衍应付",
-                    "C. 想拒绝但说不出口",
-                    "D. 确认边界，挑能承受的做"
-                ],
-                painPoint: "职场边界"
-            }
-        ];
-
         // 卡点类别定义
         const painPointCategories = {
             "职场内耗": "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗",
@@ -935,30 +833,22 @@ const modelPreviews = {
             sortedPainPoints.forEach(([painPoint, count], index) => {
                 const description = painPointCategories[painPoint] || '暂无描述';
                 resultHTML += `
-                    <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <h4 style="color: white; margin-bottom: 5px;">${index + 1}. ${painPoint}</h4>
-                        <p style="color: #ddd6fe; font-size: 0.95rem;">${description}</p>
+                    <div class="pain-point-item">
+                        <h4 class="pain-point-title">${index + 1}. ${painPoint}</h4>
+                        <p class="pain-point-desc">${description}</p>
                     </div>
                 `;
             });
             
             resultHTML += `
                     <div style="margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: 10px;">
-                        <p style="color: #fbbf24; margin-bottom: 10px;">💡 解锁完整分析报告</p>
-                        <p style="color: #ddd6fe; font-size: 0.9rem;">支付 9.9 元获取详细解决方案和思维模型</p>
-                        <button id="pay-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; border-radius: 25px; padding: 12px 30px; font-size: 1rem; cursor: pointer; margin-top: 15px; width: 100%;">
-                            立即解锁完整报告
-                        </button>
+                        <p style="color: #fbbf24; margin-bottom: 10px;">💡 免费测试完成</p>
+                        <p style="color: #ddd6fe; font-size: 0.9rem;">感谢参与测试！你可以重新测试或分享给朋友</p>
                     </div>
                 </div>
             `;
             
             resultContentEl.innerHTML = resultHTML;
-            
-            // 添加支付按钮事件
-            document.getElementById('pay-btn')?.addEventListener('click', function() {
-                alert('支付功能将在正式版中开放！\n\n现在你可以：\n1. 截图分享测试结果\n2. 重新测试查看不同答案\n3. 关注我们获取更多内容');
-            });
         }
 
         // 重新开始测试
@@ -985,7 +875,6 @@ const modelPreviews = {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('✅ 页面加载成功！');
             console.log('📱 当前题目数量:', questions.length);
-            console.log('🔗 页面URL:', window.location.href);
             
             // 初始化
             initPainPointStats();
@@ -994,7 +883,6 @@ const modelPreviews = {
         // 错误处理
         window.addEventListener('error', function(e) {
             console.error('页面错误:', e.error);
-            alert('抱歉，页面出现了一些问题，请刷新重试。');
         });
     </script>
 </body>
