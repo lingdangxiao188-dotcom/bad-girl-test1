@@ -6,7 +6,6 @@
     <title>不好惹女孩 · 场景卡点测试</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* 基础样式 */
         * {
             margin: 0;
             padding: 0;
@@ -43,11 +42,10 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 封面页样式 */
         .cover-content {
             text-align: center;
             position: relative;
@@ -119,6 +117,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .start-btn:hover {
@@ -142,16 +143,11 @@
             font-size: 0.8rem;
         }
 
-        /* 测试页面样式 */
         .test-header {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 30px;
-        }
-
-        .progress-container {
-            margin-bottom: 15px;
         }
 
         .progress-bar {
@@ -228,7 +224,6 @@
             border-color: #8b5cf6;
         }
 
-        /* 结果页样式 */
         .result-content {
             text-align: center;
         }
@@ -252,21 +247,17 @@
             font-size: 0.95rem;
         }
 
-        /* 响应式设计 */
         @media (max-width: 480px) {
             .page {
                 padding: 15px;
                 padding-top: 30px;
             }
-            
             .main-title {
                 font-size: 2.2rem;
             }
-            
             .question-text {
                 font-size: 1.1rem;
             }
-            
             .option {
                 padding: 16px;
                 font-size: 0.95rem;
@@ -285,10 +276,6 @@
                 <div class="description-box">
                     <p class="highlight-text"><i class="fas fa-bullseye"></i> 30道真实场景题</p>
                     <p class="description">帮你找到职场/关系/生活的"卡点"</p>
-                </div>
-                
-                <div class="free-tag">
-                    <span class="free-text">完全免费测试</span>
                 </div>
                 
                 <button id="start-btn" class="start-btn">
@@ -314,12 +301,12 @@
                     <div class="progress-bar">
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
-                    <div class="progress-text">第 <span id="current-question">1</span>/30 题</div>
+                    <div class="progress-text">第 <span id="current-question">1</span>/5 题</div>
                 </div>
             </div>
             
             <div class="question-container">
-                <div class="category-tag" id="question-category">职场 · 权责模糊</div>
+                <div class="category-tag" id="question-category"></div>
                 <h2 class="question-text" id="question-text"></h2>
                 <div class="options-container" id="options-container"></div>
             </div>
@@ -331,7 +318,7 @@
                 <h1 class="main-title">测试完成！</h1>
                 <div class="description-box">
                     <p class="highlight-text">🎉 恭喜完成测试</p>
-                    <p class="description">你已成功回答所有问题<br>正在生成你的个人报告...</p>
+                    <p class="description">你已成功回答所有问题</p>
                 </div>
                 <div id="result-content"></div>
                 <button id="restart-btn" class="start-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
@@ -343,7 +330,7 @@
     </div>
 
     <script>
-        // 题目数据
+        // 题目数据 - 完整的30道题
         const questions = [
             {
                 id: 1,
@@ -404,9 +391,9 @@
                     "D. 确认边界，挑能承受的做"
                 ],
                 painPoint: "职场边界"
-            }
-        ],
-         id: 6,
+            },
+            {
+        id: 6,
         category: "职场 · 当众否定",
         text: "汇报时被当场打断或否定，你怎么办？",
         options: [
@@ -707,6 +694,80 @@
     }
 ];
 
+// 定义卡点类别
+const painPointCategories = {
+    "职场内耗": {
+        icon: "fas fa-briefcase",
+        description: "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗"
+    },
+    "职场边界": {
+        icon: "fas fa-user-tie",
+        description: "难以明确工作职责边界，容易被他人的需求和情绪过度卷入"
+    },
+    "人际边界": {
+        icon: "fas fa-users",
+        description: "在关系中习惯性让渡自己的需求，难以设立健康的界限"
+    },
+    "决策拖延": {
+        icon: "fas fa-clock",
+        description: "面对重要选择时过度犹豫，或因恐惧而推迟必要的决定"
+    },
+    "情绪内耗": {
+        icon: "fas fa-brain",
+        description: "在头脑中反复思考同一件事，难以停止的自我对话和担忧"
+    },
+    "情绪受控": {
+        icon: "fas fa-bolt",
+        description: "在情绪激动时做出非理性反应，事后常常感到后悔"
+    }
+};
+
+// 定义思维模型预览
+const modelPreviews = {
+    "职场内耗": {
+        name: "课题分离模型",
+        scenario: "当别人向你倾倒情绪垃圾或塞杂活时",
+        commonMistake: "习惯性接受，内心憋屈但说不出口",
+        correctThinking: "区分'谁的课题'：对方的需求是对方的课题，你的精力分配是你的课题",
+        hook: "完整版包含3种具体回应话术和5个保护注意力的行动步骤"
+    },
+    "职场边界": {
+        name: "事实-感受-需求模型",
+        scenario: "当领导或同事的反馈让你感到委屈或愤怒时",
+        commonMistake: "陷入'对错'争论，或默默忍受但内心积怨",
+        correctThinking: "分离事实、你的感受、和你的核心需求。先回应需求，再处理情绪",
+        hook: "完整版包含如何向上、向下、平级沟通的完整表达脚本"
+    },
+    "人际边界": {
+        name: "需求优先级模型",
+        scenario: "当朋友/家人不断占用你的时间和精力时",
+        commonMistake: "要么全盘接受（然后抱怨），要么生硬拒绝（然后愧疚）",
+        correctThinking: "建立'需求筛选矩阵'：先满足自己的核心需求，再衡量可提供的支持",
+        hook: "完整版教你在不同关系中使用'温柔而坚定'的表达框架"
+    },
+    "情绪内耗": {
+        name: "情绪刹车模型",
+        scenario: "当一件事在脑中反复盘旋，停不下来时",
+        commonMistake: "试图控制想法，结果越控制想得越多",
+        correctThinking: "承认情绪的存在，但不被它牵着走。用'观察-命名-行动'三步法",
+        hook: "完整版包含7个即时可用的大脑'刹车'技巧和长期练习方案"
+    },
+    "决策拖延": {
+        name: "最小可执行决策模型",
+        scenario: "面对复杂选择，迟迟无法决定时",
+        commonMistake: "等待'完美信息'或'最佳时机'，结果错失机会",
+        correctThinking: "找到可以立即行动的'最小下一步'，用行动获得反馈，而非用思考预测结果",
+        hook: "完整版有10个常见场景的决策框架和风险评估工具"
+    },
+    "情绪受控": {
+        name: "6秒钟反应空间模型",
+        scenario: "情绪激动，马上要说出或做出后悔的事时",
+        commonMistake: "被瞬间情绪控制，做出破坏性的反应",
+        correctThinking: "在情绪峰值和行动之间创造6秒钟的'反应空间'，让理性大脑重新上线",
+        hook: "完整版教你建立个人'情绪急救包'，包含物理、认知、行为三层干预"
+    }
+};
+        
         // 卡点类别定义
         const painPointCategories = {
             "职场内耗": "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗",
@@ -745,6 +806,8 @@
 
         // 显示问题
         function showQuestion(index) {
+            console.log('显示问题:', index); // 调试日志
+            
             if (!questions[index]) {
                 console.error('题目不存在:', index);
                 return;
@@ -770,6 +833,8 @@
                 optionDiv.textContent = option;
                 
                 optionDiv.addEventListener('click', () => {
+                    console.log('选择了选项:', optionIndex); // 调试日志
+                    
                     // 移除其他选项的选中状态
                     document.querySelectorAll('.option').forEach(opt => {
                         opt.classList.remove('selected');
@@ -790,6 +855,8 @@
 
         // 选择选项
         function selectOption(optionIndex, painPoint) {
+            console.log('选择选项处理:', optionIndex, painPoint); // 调试日志
+            
             // 记录答案
             userAnswers.push({
                 questionId: currentQuestionIndex + 1,
@@ -804,6 +871,8 @@
                 }
             }
             
+            console.log('当前卡点统计:', painPointStats); // 调试日志
+            
             // 进入下一题或显示结果
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
@@ -815,6 +884,8 @@
 
         // 显示结果
         function showResults() {
+            console.log('显示结果页面'); // 调试日志
+            
             // 切换到结果页
             testPage.classList.remove('active');
             resultPage.classList.add('active');
@@ -824,21 +895,32 @@
                 .sort(([,a], [,b]) => b - a)
                 .slice(0, 3);
             
+            console.log('排序后的卡点:', sortedPainPoints); // 调试日志
+            
             // 生成结果HTML
             let resultHTML = `
                 <div class="description-box" style="text-align: left; margin-top: 20px;">
                     <h3 style="color: #f0abfc; margin-bottom: 15px;">你的核心卡点分析</h3>
             `;
             
-            sortedPainPoints.forEach(([painPoint, count], index) => {
-                const description = painPointCategories[painPoint] || '暂无描述';
+            if (sortedPainPoints.length > 0) {
+                sortedPainPoints.forEach(([painPoint, count], index) => {
+                    const description = painPointCategories[painPoint] || '暂无描述';
+                    resultHTML += `
+                        <div class="pain-point-item">
+                            <h4 class="pain-point-title">${index + 1}. ${painPoint}</h4>
+                            <p class="pain-point-desc">${description}</p>
+                        </div>
+                    `;
+                });
+            } else {
                 resultHTML += `
                     <div class="pain-point-item">
-                        <h4 class="pain-point-title">${index + 1}. ${painPoint}</h4>
-                        <p class="pain-point-desc">${description}</p>
+                        <h4 class="pain-point-title">恭喜！</h4>
+                        <p class="pain-point-desc">没有检测到明显的思维卡点，你的思维模式很健康！</p>
                     </div>
                 `;
-            });
+            }
             
             resultHTML += `
                     <div style="margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: 10px;">
@@ -853,6 +935,8 @@
 
         // 重新开始测试
         function restartTest() {
+            console.log('重新开始测试'); // 调试日志
+            
             currentQuestionIndex = 0;
             userAnswers = [];
             initPainPointStats();
@@ -861,15 +945,20 @@
             coverPage.classList.add('active');
         }
 
-        // 事件监听
+        // 事件监听 - 修复这里！
         startBtn.addEventListener('click', function() {
+            console.log('开始按钮被点击'); // 调试日志
+            
             coverPage.classList.remove('active');
             testPage.classList.add('active');
             initPainPointStats();
             showQuestion(currentQuestionIndex);
         });
 
-        restartBtn?.addEventListener('click', restartTest);
+        // 重新开始按钮事件监听
+        if (restartBtn) {
+            restartBtn.addEventListener('click', restartTest);
+        }
 
         // 页面加载完成
         document.addEventListener('DOMContentLoaded', function() {
@@ -878,6 +967,11 @@
             
             // 初始化
             initPainPointStats();
+            
+            // 调试：检查元素是否存在
+            console.log('封面页元素:', coverPage);
+            console.log('测试页元素:', testPage);
+            console.log('开始按钮:', startBtn);
         });
 
         // 错误处理
