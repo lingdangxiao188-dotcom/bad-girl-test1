@@ -1,185 +1,983 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>不好惹女孩测试</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不好惹女孩 · 场景卡点测试</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background:#f5f5f5;
-    margin:0;
-}
-.page {
-    display:none;
-    max-width:600px;
-    margin:20px auto;
-    background:#fff;
-    padding:20px;
-    border-radius:8px;
-}
-.page.active { display:block; }
-.option {
-    border:1px solid #ddd;
-    border-radius:4px;
-    padding:10px;
-    margin:8px 0;
-    cursor:pointer;
-}
-.option:hover { background:#f3f3f3; }
-.progress-bar {
-    height:8px;
-    background:#eee;
-    border-radius:4px;
-}
-.progress-fill {
-    height:100%;
-    background:#8b5cf6;
-    width:0%;
-}
-.question-index {
-    font-size:14px;
-    color:#666;
-    margin:10px 0;
-}
-button {
-    background:#8b5cf6;
-    color:#fff;
-    border:none;
-    padding:10px 16px;
-    border-radius:4px;
-    cursor:pointer;
-}
-</style>
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 40px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cover-content {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+        }
+
+        .main-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #d8b4fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #e9d5ff;
+            margin-bottom: 30px;
+        }
+
+        .description-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px 25px;
+            margin: 30px 0;
+        }
+
+        .highlight-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f0abfc;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #ddd6fe;
+            margin-bottom: 25px;
+        }
+
+        .free-tag {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(21, 128, 61, 0.2));
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin: 30px 0;
+            display: inline-block;
+        }
+
+        .free-text {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .user-count {
+            color: #c4b5fd;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        .footer-note {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+
+        .test-header {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #ddd6fe;
+            text-align: right;
+        }
+
+        .question-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.3);
+            color: #e9d5ff;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #e2e8f0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+        }
+
+        .result-content {
+            text-align: center;
+        }
+
+        .pain-point-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .pain-point-title {
+            color: #f0abfc;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .pain-point-desc {
+            color: #ddd6fe;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding: 15px;
+                padding-top: 30px;
+            }
+            .main-title {
+                font-size: 2.2rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+            }
+            .option {
+                padding: 16px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="app-container">
+        <!-- 封面页 -->
+        <div id="cover-page" class="page active">
+            <div class="cover-content">
+                <h1 class="main-title">不好惹女孩</h1>
+                <h2 class="subtitle">场景卡点扫描仪</h2>
+                
+                <div class="description-box">
+                    <p class="highlight-text"><i class="fas fa-bullseye"></i> 30道真实场景题</p>
+                    <p class="description">帮你找到职场/关系/生活的"卡点"</p>
+                </div>
+                
+                <button id="start-btn" class="start-btn">
+                    <span>开始测试</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <div class="user-count">
+                    <i class="fas fa-user-friends"></i>
+                    <span>已有 2,843 位姐妹完成测试</span>
+                </div>
+            </div>
+            
+            <div class="footer-note">
+                <p>测试时长约 3-5 分钟 · 结果即时生成</p>
+            </div>
+        </div>
+        
+        <!-- 测试页面 -->
+        <div id="test-page" class="page">
+            <div class="test-header">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">第 <span id="current-question">1</span>/5 题</div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="category-tag" id="question-category"></div>
+                <h2 class="question-text" id="question-text"></h2>
+                <div class="options-container" id="options-container"></div>
+            </div>
+        </div>
 
-<!-- 封面页 -->
-<div id="cover-page" class="page active">
-    <h1>不好惹女孩测试</h1>
-    <p>30 道真实情境题，找到你最容易被拿捏的卡点</p>
-    <button id="start-test">开始测试</button>
-</div>
-
-<!-- 测试页 -->
-<div id="test-page" class="page">
-    <div class="progress-bar">
-        <div class="progress-fill"></div>
+        <!-- 结果页 -->
+        <div id="result-page" class="page">
+            <div class="cover-content">
+                <h1 class="main-title">测试完成！</h1>
+                <div class="description-box">
+                    <p class="highlight-text">🎉 恭喜完成测试</p>
+                    <p class="description">你已成功回答所有问题</p>
+                </div>
+                <div id="result-content"></div>
+                <button id="restart-btn" class="start-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <span>重新测试</span>
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- 第 X 题 -->
-    <div id="current-question" class="question-index"></div>
-
-    <div id="question-category"></div>
-    <h2 id="question-text"></h2>
-    <div id="options-container"></div>
-</div>
-
-<!-- 结果页 -->
-<div id="result-page" class="page">
-    <h1>测试完成</h1>
-    <p>你的卡点分析已生成（示例结果页）</p>
-</div>
-
-<script>
-/* ================= 30 道题 ================= */
-const questions = [
-{category:"职场", text:"领导临时改需求并暗示是你理解错了，你会？", painPoint:"职场内耗"},
-{category:"职场", text:"同事把不属于你的工作推给你，你通常？", painPoint:"边界模糊"},
-{category:"职场", text:"被当众否定时，你更可能？", painPoint:"自我怀疑"},
-{category:"职场", text:"明明很累却不敢请假，是因为？", painPoint:"讨好型"},
-{category:"职场", text:"会议中你有不同意见，但多数时候？", painPoint:"不敢表达"},
-{category:"关系", text:"朋友经常向你倾倒负面情绪，你会？", painPoint:"情绪过载"},
-{category:"关系", text:"被爽约时，你通常选择？", painPoint:"压抑愤怒"},
-{category:"关系", text:"对方冷暴力，你更可能？", painPoint:"关系焦虑"},
-{category:"关系", text:"不舒服的玩笑出现时，你会？", painPoint:"边界模糊"},
-{category:"关系", text:"你是否常常反思是不是自己太敏感？", painPoint:"自我怀疑"},
-{category:"家庭", text:"家人指责你时，你往往？", painPoint:"情绪内耗"},
-{category:"家庭", text:"被要求牺牲个人时间时？", painPoint:"讨好型"},
-{category:"家庭", text:"你是否很难拒绝长辈？", painPoint:"边界模糊"},
-{category:"家庭", text:"情绪被否定时你会？", painPoint:"压抑愤怒"},
-{category:"家庭", text:"你是否常常隐忍不说？", painPoint:"自我压抑"},
-{category:"自我", text:"别人评价你时，你更在意？", painPoint:"他评依赖"},
-{category:"自我", text:"做决定时你通常？", painPoint:"自我怀疑"},
-{category:"自我", text:"你是否害怕让人失望？", painPoint:"讨好型"},
-{category:"自我", text:"你是否容易自责？", painPoint:"内在苛责"},
-{category:"自我", text:"你是否经常想“是不是我不够好”？", painPoint:"自我否定"},
-{category:"冲突", text:"发生冲突时你更可能？", painPoint:"回避冲突"},
-{category:"冲突", text:"表达不满时你会？", painPoint:"表达困难"},
-{category:"冲突", text:"被误解时你会？", painPoint:"无力辩解"},
-{category:"冲突", text:"你是否害怕冲突升级？", painPoint:"冲突恐惧"},
-{category:"冲突", text:"你是否事后反复复盘？", painPoint:"反刍思维"},
-{category:"边界", text:"别人越界时你通常？", painPoint:"边界模糊"},
-{category:"边界", text:"拒绝别人时你会？", painPoint:"内疚感"},
-{category:"边界", text:"你是否觉得拒绝很自私？", painPoint:"讨好型"},
-{category:"边界", text:"你是否习惯先考虑别人？", painPoint:"自我忽视"},
-{category:"边界", text:"你是否很少提出自己的需求？", painPoint:"需求压抑"},
-];
-
-/* =============== 选项（统一） =============== */
-const options = [
-"A. 先反省是不是自己问题",
-"B. 心里不舒服但忍下来",
-"C. 想反驳但没说出口",
-"D. 清楚表达立场与边界"
-];
-
-/* =============== 状态 & DOM =============== */
-let currentQuestionIndex = 0;
-
-const coverPage = document.getElementById('cover-page');
-const testPage = document.getElementById('test-page');
-const resultPage = document.getElementById('result-page');
-
-const startTestBtn = document.getElementById('start-test');
-const currentQuestionEl = document.getElementById('current-question');
-const questionTextEl = document.getElementById('question-text');
-const questionCategoryEl = document.getElementById('question-category');
-const optionsContainerEl = document.getElementById('options-container');
-const progressFillEl = document.querySelector('.progress-fill');
-
-/* =============== 核心逻辑 =============== */
-function showQuestion(index) {
-    const q = questions[index];
-
-    currentQuestionEl.textContent = `第 ${index + 1} 题 / 共 ${questions.length} 题`;
-    progressFillEl.style.width = `${((index + 1) / questions.length) * 100}%`;
-
-    questionCategoryEl.textContent = q.category;
-    questionTextEl.textContent = q.text;
-    optionsContainerEl.innerHTML = "";
-
-    options.forEach((opt, i) => {
-        const div = document.createElement("div");
-        div.className = "option";
-        div.textContent = opt;
-        div.onclick = () => nextQuestion();
-        optionsContainerEl.appendChild(div);
-    });
-}
-
-function nextQuestion() {
-    if (currentQuestionIndex < questions.length - 1) {
-        currentQuestionIndex++;
-        showQuestion(currentQuestionIndex);
-    } else {
-        coverPage.classList.remove("active");
-        testPage.classList.remove("active");
-        resultPage.classList.add("active");
+    <script>
+        // 题目数据 - 完整的30道题
+        const questions = [
+            {
+                id: 1,
+                category: "职场 · 权责模糊",
+                text: "当领导临时改需求，并暗示是你没理解清楚时，你更接近哪种反应？",
+                options: [
+                    "A. 先自责，赶紧补救，事后越想越委屈",
+                    "B. 当下没说什么，心里很不爽，之后开始摆烂",
+                    "C. 想解释，但话说得很乱，越说越被动",
+                    "D. 先确认事实和边界，再决定怎么回应"
+                ],
+                painPoint: "职场内耗"
+            },
+            {
+                id: 2,
+                category: "职场 · 功劳被抢",
+                text: "同事把你的功劳拿走时，你通常怎么做？",
+                options: [
+                    "A. 直接生气，心里委屈，但不说出口",
+                    "B. 抱怨给朋友听，但不当面沟通",
+                    "C. 反复琢磨原因，浪费脑力",
+                    "D. 理清事实，记录证据，之后再找机会说明"
+                ],
+                painPoint: "职场边界"
+            },
+            {
+                id: 3,
+                category: "关系 · 情绪消耗",
+                text: "朋友总把自己的问题丢给你处理，你怎么办？",
+                options: [
+                    "A. 答应，但心里越来越累",
+                    "B. 直接拒绝，怕伤感情",
+                    "C. 敷衍应付，心里不舒服",
+                    "D. 先分析优先级，挑能帮的做"
+                ],
+                painPoint: "人际边界"
+            },
+            {
+                id: 4,
+                category: "职场 · 长期吃亏",
+                text: "明明你干的活更多，但功劳被同事拿走，你通常反应是？",
+                options: [
+                    "A. 默默忍受",
+                    "B. 向上级抱怨，容易陷入争论",
+                    "C. 暗中计较，但不表达",
+                    "D. 记录事实，找合适时机说明"
+                ],
+                painPoint: "职场内耗"
+            },
+            {
+                id: 5,
+                category: "职场 · 边界不清",
+                text: "被塞进不属于你职责的杂活，你会？",
+                options: [
+                    "A. 无条件接受",
+                    "B. 敷衍应付",
+                    "C. 想拒绝但说不出口",
+                    "D. 确认边界，挑能承受的做"
+                ],
+                painPoint: "职场边界"
+            },
+            {
+        id: 6,
+        category: "职场 · 当众否定",
+        text: "汇报时被当场打断或否定，你怎么办？",
+        options: [
+            "A. 立刻反驳",
+            "B. 默默挨批，心里不爽",
+            "C. 事后抱怨",
+            "D. 先冷静整理事实，再沟通"
+        ],
+        painPoint: "情绪受控"
+    },
+    {
+        id: 7,
+        category: "职场 · 空头承诺",
+        text: "被要求'先干着看，之后再说结果'，你会？",
+        options: [
+            "A. 随便做，事后抱怨",
+            "B. 拖延不做",
+            "C. 偷偷加快处理",
+            "D. 先明确目标和标准再执行"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 8,
+        category: "职场 · 情绪揣测",
+        text: "领导忽冷忽热，你会？",
+        options: [
+            "A. 胡思乱想，自己内耗",
+            "B. 事后过度反思",
+            "C. 抱怨给朋友听",
+            "D. 专注结果，调整心态"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 9,
+        category: "家庭 · 职业干预",
+        text: "父母干预你的职业选择，你通常反应？",
+        options: [
+            "A. 一味顺从",
+            "B. 抵触争论",
+            "C. 自我怀疑",
+            "D. 分析利弊后坚定自己选择"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 10,
+        category: "家庭 · 经济压力",
+        text: "家里期待你经济独立，但现实压力很大，你会？",
+        options: [
+            "A. 焦虑拖延",
+            "B. 隐忍不说",
+            "C. 情绪化花钱",
+            "D. 制定计划，一步步解决"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 11,
+        category: "家庭 · 比较伤害",
+        text: "被家人反复比较时，你内心更多是？",
+        options: [
+            "A. 自责",
+            "B. 生气",
+            "C. 无力感",
+            "D. 记录事实，专注成长"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 12,
+        category: "家庭 · 情绪责任",
+        text: "家里成员习惯让你照顾他们情绪，你会？",
+        options: [
+            "A. 任劳任怨",
+            "B. 敷衍应付",
+            "C. 怨天尤人",
+            "D. 先处理自己，再衡量可帮多少"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 13,
+        category: "金钱 · 收入焦虑",
+        text: "收入低于预期，你通常会？",
+        options: [
+            "A. 抱怨领导或环境",
+            "B. 自我焦虑",
+            "C. 忍耐不行动",
+            "D. 制定提升方案"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 14,
+        category: "金钱 · 消费纠结",
+        text: "想买东西，但担心花钱不理智，你会？",
+        options: [
+            "A. 冲动消费",
+            "B. 拖延犹豫",
+            "C. 完全放弃",
+            "D. 列清单后理性选择"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 15,
+        category: "金钱 · 对比焦虑",
+        text: "理财被忽略，看到别人赚钱，你会？",
+        options: [
+            "A. 焦虑攀比",
+            "B. 羡慕但不行动",
+            "C. 抱怨条件不够",
+            "D. 学习并行动"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 16,
+        category: "职业 · 安全感缺失",
+        text: "工作不稳，害怕被裁员，你会？",
+        options: [
+            "A. 焦虑躲避",
+            "B. 事事谨慎过度",
+            "C. 抱怨环境",
+            "D. 提升能力，增强价值"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 17,
+        category: "职业 · 失业状态",
+        text: "真正面临失业时，你最接近的状态是？",
+        options: [
+            "A. 恐慌",
+            "B. 否认",
+            "C. 抱怨",
+            "D. 分析机会，行动计划"
+        ],
+        painPoint: "情绪受控"
+    },
+    {
+        id: 18,
+        category: "职业 · 转型犹豫",
+        text: "想换职业或创业，但怕能力不够，你会？",
+        options: [
+            "A. 拖延",
+            "B. 幻想",
+            "C. 抱怨条件",
+            "D. 列清单，逐步尝试"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 19,
+        category: "感情 · 主动失衡",
+        text: "喜欢的人不主动，你通常？",
+        options: [
+            "A. 先示好",
+            "B. 等待不作为",
+            "C. 抱怨朋友",
+            "D. 分析状况再行动"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 20,
+        category: "感情 · 边界被踩",
+        text: "对方行为越界时，你会？",
+        options: [
+            "A. 忍耐",
+            "B. 生气抱怨",
+            "C. 退缩",
+            "D. 明确边界再沟通"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 21,
+        category: "感情 · 分手后",
+        text: "分手后，你更接近哪种状态？",
+        options: [
+            "A. 反复纠结",
+            "B. 过度自责",
+            "C. 抱怨对方",
+            "D. 总结经验，继续前行"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 22,
+        category: "感情 · 付出失衡",
+        text: "感情里你付出更多时，你通常？",
+        options: [
+            "A. 委屈自己",
+            "B. 抱怨",
+            "C. 冷处理",
+            "D. 表达感受，调整付出"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 23,
+        category: "人际 · 拒绝困难",
+        text: "担心拒绝会伤感情，你会？",
+        options: [
+            "A. 默认妥协",
+            "B. 拖延",
+            "C. 隐忍",
+            "D. 礼貌拒绝，明确底线"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 24,
+        category: "人际 · 被不尊重",
+        text: "发现对方不尊重你，你会？",
+        options: [
+            "A. 忍耐",
+            "B. 抱怨朋友",
+            "C. 冲动回应",
+            "D. 沟通并调整界限"
+        ],
+        painPoint: "情绪受控"
+    },
+    {
+        id: 25,
+        category: "人际 · 友情消耗",
+        text: "好朋友总把问题丢给你，你会？",
+        options: [
+            "A. 答应但很累",
+            "B. 拒绝怕伤感情",
+            "C. 敷衍",
+            "D. 分析优先级再处理"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 26,
+        category: "人际 · 被议论",
+        text: "被朋友或同事背后议论，你会？",
+        options: [
+            "A. 气到不行",
+            "B. 抱怨",
+            "C. 回怼",
+            "D. 记录事实，专注自己"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 27,
+        category: "人际 · 冲突场合",
+        text: "遇到矛盾，你总想圆场，是因为？",
+        options: [
+            "A. 忍让过度",
+            "B. 抱怨",
+            "C. 逃避",
+            "D. 分析后决定是否介入"
+        ],
+        painPoint: "人际边界"
+    },
+    {
+        id: 28,
+        category: "人际 · 不敢表达",
+        text: "怕破坏关系，不敢说真实想法时，你会？",
+        options: [
+            "A. 沉默",
+            "B. 委屈",
+            "C. 抱怨",
+            "D. 选合适场景表达"
+        ],
+        painPoint: "决策拖延"
+    },
+    {
+        id: 29,
+        category: "人际 · 被冷落",
+        text: "在人际场合被忽略或冷落，你会？",
+        options: [
+            "A. 闷闷不乐",
+            "B. 抱怨朋友",
+            "C. 躲避",
+            "D. 观察，寻找展示机会"
+        ],
+        painPoint: "情绪内耗"
+    },
+    {
+        id: 30,
+        category: "人际 · 被卷入争吵",
+        text: "被拖进别人无意义的争吵，你会？",
+        options: [
+            "A. 硬碰硬",
+            "B. 退缩",
+            "C. 抱怨",
+            "D. 分析后决定是否参与"
+        ],
+        painPoint: "情绪受控"
     }
-}
+];
 
-/* =============== 启动 =============== */
-startTestBtn.onclick = () => {
-    coverPage.classList.remove("active");
-    testPage.classList.add("active");
-    showQuestion(0);
+// 定义卡点类别
+const painPointCategories = {
+    "职场内耗": {
+        icon: "fas fa-briefcase",
+        description: "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗"
+    },
+    "职场边界": {
+        icon: "fas fa-user-tie",
+        description: "难以明确工作职责边界，容易被他人的需求和情绪过度卷入"
+    },
+    "人际边界": {
+        icon: "fas fa-users",
+        description: "在关系中习惯性让渡自己的需求，难以设立健康的界限"
+    },
+    "决策拖延": {
+        icon: "fas fa-clock",
+        description: "面对重要选择时过度犹豫，或因恐惧而推迟必要的决定"
+    },
+    "情绪内耗": {
+        icon: "fas fa-brain",
+        description: "在头脑中反复思考同一件事，难以停止的自我对话和担忧"
+    },
+    "情绪受控": {
+        icon: "fas fa-bolt",
+        description: "在情绪激动时做出非理性反应，事后常常感到后悔"
+    }
 };
-</script>
 
+// 定义思维模型预览
+const modelPreviews = {
+    "职场内耗": {
+        name: "课题分离模型",
+        scenario: "当别人向你倾倒情绪垃圾或塞杂活时",
+        commonMistake: "习惯性接受，内心憋屈但说不出口",
+        correctThinking: "区分'谁的课题'：对方的需求是对方的课题，你的精力分配是你的课题",
+        hook: "完整版包含3种具体回应话术和5个保护注意力的行动步骤"
+    },
+    "职场边界": {
+        name: "事实-感受-需求模型",
+        scenario: "当领导或同事的反馈让你感到委屈或愤怒时",
+        commonMistake: "陷入'对错'争论，或默默忍受但内心积怨",
+        correctThinking: "分离事实、你的感受、和你的核心需求。先回应需求，再处理情绪",
+        hook: "完整版包含如何向上、向下、平级沟通的完整表达脚本"
+    },
+    "人际边界": {
+        name: "需求优先级模型",
+        scenario: "当朋友/家人不断占用你的时间和精力时",
+        commonMistake: "要么全盘接受（然后抱怨），要么生硬拒绝（然后愧疚）",
+        correctThinking: "建立'需求筛选矩阵'：先满足自己的核心需求，再衡量可提供的支持",
+        hook: "完整版教你在不同关系中使用'温柔而坚定'的表达框架"
+    },
+    "情绪内耗": {
+        name: "情绪刹车模型",
+        scenario: "当一件事在脑中反复盘旋，停不下来时",
+        commonMistake: "试图控制想法，结果越控制想得越多",
+        correctThinking: "承认情绪的存在，但不被它牵着走。用'观察-命名-行动'三步法",
+        hook: "完整版包含7个即时可用的大脑'刹车'技巧和长期练习方案"
+    },
+    "决策拖延": {
+        name: "最小可执行决策模型",
+        scenario: "面对复杂选择，迟迟无法决定时",
+        commonMistake: "等待'完美信息'或'最佳时机'，结果错失机会",
+        correctThinking: "找到可以立即行动的'最小下一步'，用行动获得反馈，而非用思考预测结果",
+        hook: "完整版有10个常见场景的决策框架和风险评估工具"
+    },
+    "情绪受控": {
+        name: "6秒钟反应空间模型",
+        scenario: "情绪激动，马上要说出或做出后悔的事时",
+        commonMistake: "被瞬间情绪控制，做出破坏性的反应",
+        correctThinking: "在情绪峰值和行动之间创造6秒钟的'反应空间'，让理性大脑重新上线",
+        hook: "完整版教你建立个人'情绪急救包'，包含物理、认知、行为三层干预"
+    }
+};
+        
+        // 卡点类别定义
+        const painPointCategories = {
+            "职场内耗": "在职场中因过度反思、自我怀疑、或无法有效处理压力而产生的持续消耗",
+            "职场边界": "难以明确工作职责边界，容易被他人的需求和情绪过度卷入",
+            "人际边界": "在关系中习惯性让渡自己的需求，难以设立健康的界限",
+            "决策拖延": "面对重要选择时过度犹豫，或因恐惧而推迟必要的决定",
+            "情绪内耗": "在头脑中反复思考同一件事，难以停止的自我对话和担忧",
+            "情绪受控": "在情绪激动时做出非理性反应，事后常常感到后悔"
+        };
+
+        // 全局变量
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let painPointStats = {};
+
+        // DOM 元素
+        const coverPage = document.getElementById('cover-page');
+        const testPage = document.getElementById('test-page');
+        const resultPage = document.getElementById('result-page');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const progressFill = document.getElementById('progress-fill');
+        const currentQuestionEl = document.getElementById('current-question');
+        const questionCategoryEl = document.getElementById('question-category');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const resultContentEl = document.getElementById('result-content');
+
+        // 初始化卡点统计
+        function initPainPointStats() {
+            const painPoints = ['职场内耗', '职场边界', '人际边界', '决策拖延', '情绪内耗', '情绪受控'];
+            painPoints.forEach(point => {
+                painPointStats[point] = 0;
+            });
+        }
+
+        // 显示问题
+        function showQuestion(index) {
+            console.log('显示问题:', index); // 调试日志
+            
+            if (!questions[index]) {
+                console.error('题目不存在:', index);
+                return;
+            }
+            
+            const question = questions[index];
+            
+            // 更新进度
+            currentQuestionEl.textContent = index + 1;
+            progressFill.style.width = `${((index + 1) / questions.length) * 100}%`;
+            
+            // 更新题目
+            questionCategoryEl.textContent = question.category;
+            questionTextEl.textContent = question.text;
+            
+            // 清空选项容器
+            optionsContainerEl.innerHTML = '';
+            
+            // 添加选项
+            question.options.forEach((option, optionIndex) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                
+                optionDiv.addEventListener('click', () => {
+                    console.log('选择了选项:', optionIndex); // 调试日志
+                    
+                    // 移除其他选项的选中状态
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 添加选中状态
+                    optionDiv.classList.add('selected');
+                    
+                    // 延迟后进入下一题
+                    setTimeout(() => {
+                        selectOption(optionIndex, question.painPoint);
+                    }, 300);
+                });
+                
+                optionsContainerEl.appendChild(optionDiv);
+            });
+        }
+
+        // 选择选项
+        function selectOption(optionIndex, painPoint) {
+            console.log('选择选项处理:', optionIndex, painPoint); // 调试日志
+            
+            // 记录答案
+            userAnswers.push({
+                questionId: currentQuestionIndex + 1,
+                selectedOption: optionIndex,
+                painPoint: painPoint
+            });
+            
+            // 更新卡点统计
+            if (optionIndex < 3) { // A、B、C 是卡点选项
+                if (painPointStats[painPoint] !== undefined) {
+                    painPointStats[painPoint]++;
+                }
+            }
+            
+            console.log('当前卡点统计:', painPointStats); // 调试日志
+            
+            // 进入下一题或显示结果
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                showResults();
+            }
+        }
+
+        // 显示结果
+        function showResults() {
+            console.log('显示结果页面'); // 调试日志
+            
+            // 切换到结果页
+            testPage.classList.remove('active');
+            resultPage.classList.add('active');
+            
+            // 计算卡点排名
+            const sortedPainPoints = Object.entries(painPointStats)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3);
+            
+            console.log('排序后的卡点:', sortedPainPoints); // 调试日志
+            
+            // 生成结果HTML
+            let resultHTML = `
+                <div class="description-box" style="text-align: left; margin-top: 20px;">
+                    <h3 style="color: #f0abfc; margin-bottom: 15px;">你的核心卡点分析</h3>
+            `;
+            
+            if (sortedPainPoints.length > 0) {
+                sortedPainPoints.forEach(([painPoint, count], index) => {
+                    const description = painPointCategories[painPoint] || '暂无描述';
+                    resultHTML += `
+                        <div class="pain-point-item">
+                            <h4 class="pain-point-title">${index + 1}. ${painPoint}</h4>
+                            <p class="pain-point-desc">${description}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                resultHTML += `
+                    <div class="pain-point-item">
+                        <h4 class="pain-point-title">恭喜！</h4>
+                        <p class="pain-point-desc">没有检测到明显的思维卡点，你的思维模式很健康！</p>
+                    </div>
+                `;
+            }
+            
+            resultHTML += `
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-radius: 10px;">
+                        <p style="color: #fbbf24; margin-bottom: 10px;">💡 免费测试完成</p>
+                        <p style="color: #ddd6fe; font-size: 0.9rem;">感谢参与测试！你可以重新测试或分享给朋友</p>
+                    </div>
+                </div>
+            `;
+            
+            resultContentEl.innerHTML = resultHTML;
+        }
+
+        // 重新开始测试
+        function restartTest() {
+            console.log('重新开始测试'); // 调试日志
+            
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            initPainPointStats();
+            
+            resultPage.classList.remove('active');
+            coverPage.classList.add('active');
+        }
+
+        // 事件监听 - 修复这里！
+        startBtn.addEventListener('click', function() {
+            console.log('开始按钮被点击'); // 调试日志
+            
+            coverPage.classList.remove('active');
+            testPage.classList.add('active');
+            initPainPointStats();
+            showQuestion(currentQuestionIndex);
+        });
+
+        // 重新开始按钮事件监听
+        if (restartBtn) {
+            restartBtn.addEventListener('click', restartTest);
+        }
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ 页面加载成功！');
+            console.log('📱 当前题目数量:', questions.length);
+            
+            // 初始化
+            initPainPointStats();
+            
+            // 调试：检查元素是否存在
+            console.log('封面页元素:', coverPage);
+            console.log('测试页元素:', testPage);
+            console.log('开始按钮:', startBtn);
+        });
+
+        // 错误处理
+        window.addEventListener('error', function(e) {
+            console.error('页面错误:', e.error);
+        });
+    </script>
 </body>
 </html>
