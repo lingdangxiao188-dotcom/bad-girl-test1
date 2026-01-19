@@ -905,7 +905,7 @@ const modelPreviews = {
             
             if (sortedPainPoints.length > 0) {
                 sortedPainPoints.forEach(([painPoint, count], index) => {
-                    const description = painPointCategories[painPoint] || '暂无描述';
+                    const description = painPointCategories1[painPoint] || '暂无描述';
                     resultHTML += `
                         <div class="pain-point-item">
                             <h4 class="pain-point-title">${index + 1}. ${painPoint}</h4>
