@@ -342,7 +342,7 @@
     </div>
 
     <script>
-        // 题目数据 - 简化版，只包含5题用于测试
+        // 题目数据 
         const questions = [
             {
                 id: 1,
@@ -728,7 +728,6 @@
         const startBtn = document.getElementById('start-btn');
         const restartBtn = document.getElementById('restart-btn');
         const progressFill = document.getElementById('progress-fill');
-        const currentQuestionEl = document.getElementById('current-question');
         const questionCategoryEl = document.getElementById('question-category');
         const questionTextEl = document.getElementById('question-text');
         const optionsContainerEl = document.getElementById('options-container');
@@ -756,7 +755,6 @@ function showQuestion(index) {
     const question = questions[index];
     
     // 更新进度
-    currentQuestionEl.textContent = index + 1;
     progressFillEl.style.width = `${((index + 1) / questions.length) * 100}%`;
     
     // 更新题目
